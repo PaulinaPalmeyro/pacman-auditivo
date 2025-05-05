@@ -133,8 +133,8 @@ const PatientProfile = () => {
                 py: 2,
                 mt: 2,
                 width: "100%",
-                backgroundColor: "#FBC02D",
-                color: "#333",
+                backgroundColor: "white",
+                color: "#7B1FA2",
                 fontWeight: 600,
                 fontSize: "1rem",
                 borderRadius: "999px",
@@ -142,7 +142,7 @@ const PatientProfile = () => {
                 "&:hover": { backgroundColor: "#f9a825" },
               }}
             >
-              Ver Observaciones del Usuario
+              Ver Observaciones al Usuario
             </Button>
           </Box>
         </Paper>

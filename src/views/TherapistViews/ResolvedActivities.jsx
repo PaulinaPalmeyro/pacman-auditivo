@@ -78,7 +78,7 @@ const ResolvedActivities = () => {
                   <ListItem>
                     <ListItemText primary={actividad.nombre} />
                     <ListItemSecondaryAction>
-                      <IconButton edge="end">
+                      <IconButton edge="end" onClick={() => navigate("/actividad/1")}>
                         <Visibility />
                       </IconButton>
                     </ListItemSecondaryAction>

@@ -10,6 +10,7 @@ import PatientProfile from "./views/TherapistViews/PatientProfile";
 import AssignActivities from "./views/TherapistViews/AssignActivities";
 import ResolvedActivities from "./views/TherapistViews/ResolvedActivities";
 import EditPatient from "./views/TherapistViews/EditPatient";
+import ActivityDetails from "./views/TherapistViews/ActivityDetails";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/asignar-actividades/:id" element={<AssignActivities />} />
         <Route path="/actividades-resueltas/:id" element={<ResolvedActivities />} />
         <Route path="/editar-paciente/:id" element={<EditPatient />} />
+        <Route path="/actividad/:id" element={<ActivityDetails />} />
       </Routes>
     </Router>
   );
