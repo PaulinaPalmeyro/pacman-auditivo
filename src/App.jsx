@@ -9,6 +9,7 @@ import RegisterPatient from "./views/TherapistViews/RegisterPatient";
 import PatientProfile from "./views/TherapistViews/PatientProfile";
 import AssignActivities from "./views/TherapistViews/AssignActivities";
 import ResolvedActivities from "./views/TherapistViews/ResolvedActivities";
+import EditPatient from "./views/TherapistViews/EditPatient";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/paciente/1" element={<PatientProfile />} />
         <Route path="/asignar-actividades/:id" element={<AssignActivities />} />
         <Route path="/actividades-resueltas/:id" element={<ResolvedActivities />} />
+        <Route path="/editar-paciente/:id" element={<EditPatient />} />
       </Routes>
     </Router>
   );
