@@ -31,7 +31,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/fono-dashboard" element={<TherapistDashboard />} />
         <Route path="/register-patient" element={<RegisterPatient />} />
-        <Route path="/paciente/1" element={<PatientProfile />} />
+        <Route path="/fono-dashboard/paciente/:id" element={<PatientProfile />} />
         <Route path="/asignar-actividades/:id" element={<AssignActivities />} />
         <Route path="/actividades-resueltas/:id" element={<ResolvedActivities />} />
         <Route path="/editar-paciente/:id" element={<EditPatient />} />

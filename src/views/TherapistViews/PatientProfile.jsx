@@ -1,5 +1,5 @@
 // src/views/TherapistViews/PatientProfile.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -13,32 +13,76 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  CircularProgress,
+  Alert
 } from "@mui/material";
 import { ArrowBack, Edit, Delete } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
-
-const mockPaciente = {
-  nombre: "Lucía Fernández",
-  dni: "12345678",
-  fechaNacimiento: "2014-06-20",
-  observaciones: "Paciente con dificultades para seguir instrucciones en ambientes ruidosos."
-};
+import authService from "../../services/authService";
 
 const PatientProfile = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [open, setOpen] = useState(false);
+  const [paciente, setPaciente] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPaciente = async () => {
+      try {
+        const data = await authService.getPatientById(id);
+        setPaciente(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Error al cargar los datos del paciente');
+        setLoading(false);
+      }
+    };
+
+    fetchPaciente();
+  }, [id]);
 
   const handleEdit = () => {
-    navigate("/editar-paciente/1");
+    navigate(`/editar-paciente/${id}`);
   };
 
-  const handleDeleteConfirm = () => {
-    setOpen(false);
-    alert("Paciente eliminado (mock)");
-    navigate("/fono-dashboard");
+  const handleDeleteConfirm = async () => {
+    try {
+      await authService.deletePatient(id);
+      setOpen(false);
+      navigate("/fono-dashboard");
+    } catch (err) {
+      setError(err.message || 'Error al eliminar el paciente');
+      setOpen(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ px: 4, py: 6 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
+
+  if (!paciente) {
+    return (
+      <Box sx={{ px: 4, py: 6 }}>
+        <Alert severity="warning">Paciente no encontrado</Alert>
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -51,7 +95,7 @@ const PatientProfile = () => {
               <ArrowBack />
             </IconButton>
             <Typography variant="h5" fontWeight={700} textAlign="center" sx={{ flexGrow: 1 }}>
-              {mockPaciente.nombre}
+              {paciente.name}
             </Typography>
             <IconButton onClick={handleEdit} color="primary">
               <Edit />
@@ -66,24 +110,32 @@ const PatientProfile = () => {
               <Typography variant="h6" fontWeight={600} display="inline">
                 Nombre:&nbsp;
               </Typography>
-              <Typography display="inline">{mockPaciente.nombre}</Typography>
+              <Typography display="inline">{paciente.name}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="h6" fontWeight={600} display="inline">
                 DNI:&nbsp;
               </Typography>
-              <Typography display="inline">{mockPaciente.dni}</Typography>
+              <Typography display="inline">{paciente.dni}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="h6" fontWeight={600} display="inline">
                 Fecha de Nacimiento:&nbsp;
               </Typography>
-              <Typography display="inline">{mockPaciente.fechaNacimiento}</Typography>
+              <Typography display="inline">
+                {new Date(paciente.fechaNacimiento).toLocaleDateString()}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" fontWeight={600} display="inline">
+                Email:&nbsp;
+              </Typography>
+              <Typography display="inline">{paciente.email}</Typography>
             </Grid>
           </Grid>
 
           <Typography variant="h6" fontWeight={600} mt={4}>Observaciones:</Typography>
-          <Typography>{mockPaciente.observaciones}</Typography>
+          <Typography>{paciente.observaciones || 'No hay observaciones registradas'}</Typography>
 
           <Box sx={{ mt: 6, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
             <Grid container spacing={2} justifyContent="center">
@@ -91,7 +143,7 @@ const PatientProfile = () => {
                 <Button
                   fullWidth
                   variant="contained"
-                  onClick={() => navigate("/asignar-actividades/1")}
+                  onClick={() => navigate(`/asignar-actividades/${id}`)}
                   sx={{
                     py: 2,
                     backgroundColor: "#7B1FA2",
@@ -110,7 +162,7 @@ const PatientProfile = () => {
                 <Button
                   fullWidth
                   variant="contained"
-                  onClick={() => navigate("/actividades-resueltas/1")}
+                  onClick={() => navigate(`/actividades-resueltas/${id}`)}
                   sx={{
                     py: 2,
                     backgroundColor: "#1976d2",

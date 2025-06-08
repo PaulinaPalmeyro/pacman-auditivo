@@ -1,6 +1,6 @@
 // src/views/TherapistViews/EditPatient.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
@@ -8,29 +8,74 @@ import {
   Paper,
   TextField,
   Typography,
+  CircularProgress,
+  Alert
 } from "@mui/material";
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
+import authService from "../../services/authService";
 
 const EditPatient = () => {
   const navigate = useNavigate();
-
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    nombre: "Lucía Fernández",
-    dni: "12345678",
-    fechaNacimiento: "2014-06-20",
-    observaciones: "Paciente con dificultades para seguir instrucciones en ambientes ruidosos."
+    name: "",
+    dni: "",
+    fechaNacimiento: "",
+    observaciones: ""
   });
+
+  useEffect(() => {
+    const fetchPaciente = async () => {
+      try {
+        const data = await authService.getPatientById(id);
+        setFormData({
+          name: data.name,
+          dni: data.dni,
+          fechaNacimiento: data.fechaNacimiento.split('T')[0], // Formatear fecha para el input
+          observaciones: data.observaciones || ""
+        });
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Error al cargar los datos del paciente');
+        setLoading(false);
+      }
+    };
+
+    fetchPaciente();
+  }, [id]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Datos del paciente actualizados (mock)");
-    navigate("/paciente/1");
+    try {
+      await authService.updatePatient(id, formData);
+      navigate(`/fono-dashboard/paciente/${id}`);
+    } catch (err) {
+      setError(err.message || 'Error al actualizar los datos del paciente');
+    }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ px: 4, py: 6 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -46,8 +91,8 @@ const EditPatient = () => {
             <TextField
               fullWidth
               label="Nombre"
-              name="nombre"
-              value={formData.nombre}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               margin="normal"
               required
@@ -86,7 +131,7 @@ const EditPatient = () => {
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
               <Button
                 variant="outlined"
-                onClick={() => navigate("/paciente/1")}
+                onClick={() => navigate(`/fono-dashboard/paciente/${id}`)}
                 sx={{ borderRadius: "999px", px: 4 }}
               >
                 Cancelar

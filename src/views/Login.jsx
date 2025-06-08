@@ -8,9 +8,9 @@ import {
   TextField,
   Button,
   Link,
-  MenuItem,
   InputAdornment,
   IconButton,
+  Alert,
 } from "@mui/material";
 import {
   Person,
@@ -20,27 +20,40 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
+import authService from "../services/authService";
+import useUserStore from "../store/useUserStore";
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
   const [form, setForm] = useState({
-    usuario: "mockUser",
-    password: "1234",
-    rol: "fono"
+    email: "",
+    password: "",
   });
-
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError(""); // Limpiar error cuando el usuario modifica el formulario
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (form.rol === "fono") {
-      navigate("/fono-dashboard");
-    } else {
-      navigate("/paciente-dashboard");
+    try {
+      const response = await authService.login(form.email, form.password);
+      setUser(response);
+      
+      // Redirección basada en el rol que devuelve el backend
+      if (response.role === "fonoaudiologo") {
+        navigate("/fono-dashboard");
+      } else if (response.role === "paciente") {
+        navigate("/paciente-dashboard");
+      } else {
+        setError("Rol de usuario no válido");
+      }
+    } catch (err) {
+      setError(err.message || "Error al iniciar sesión");
     }
   };
 
@@ -64,26 +77,19 @@ const Login = () => {
             Iniciar Sesión
           </Typography>
 
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <form onSubmit={handleLogin}>
             <TextField
-              select
               fullWidth
-              label="Ingresar como"
-              name="rol"
-              value={form.rol}
-              onChange={handleChange}
-              margin="normal"
-              required
-            >
-              <MenuItem value="fono">Fonoaudiólogo/a</MenuItem>
-              <MenuItem value="paciente">Paciente</MenuItem>
-            </TextField>
-
-            <TextField
-              fullWidth
-              label="Usuario"
-              name="usuario"
-              value={form.usuario}
+              label="Email"
+              name="email"
+              type="email"
+              value={form.email}
               onChange={handleChange}
               margin="normal"
               required
