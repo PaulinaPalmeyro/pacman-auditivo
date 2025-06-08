@@ -7,9 +7,7 @@ import logo from "../assets/Logo.png";
 const Navbar = () => {
   const location = useLocation();
 
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
     <AppBar
@@ -92,24 +90,25 @@ const Navbar = () => {
           </Button>
 
           <Button
-            variant="contained"
-            disabled
-            sx={{
-              fontSize: "1rem",
-              px: 3,
-              py: 1.5,
-              backgroundColor: "#e0e0e0",
-              borderRadius: "999px",
-              textTransform: "none",
-              fontWeight: 600,
-              color: "#333",
-              "&:hover": {
-                backgroundColor: "#d5d5d5",
-              },
-            }}
-          >
-            Sobre Nosotros
-          </Button>
+              component={RouterLink}
+              to="/sobre-nosotros"
+              variant="contained"
+              sx={{
+                fontSize: "1rem",
+                px: 3,
+                py: 1.5,
+                backgroundColor: isActive("/sobre-nosotros") ? "#7B1FA2" : "#e0e0e0",
+                borderRadius: "999px",
+                textTransform: "none",
+                fontWeight: 600,
+                color: isActive("/sobre-nosotros") ? "#ffffff" : "#333",
+                "&:hover": {
+                  backgroundColor: isActive("/sobre-nosotros") ? "#6a1b9a" : "#d5d5d5",
+                },
+              }}
+            >
+              Sobre Nosotros
+            </Button>
         </Box>
 
         {/* Botón de login a la derecha */}

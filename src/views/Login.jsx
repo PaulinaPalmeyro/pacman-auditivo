@@ -8,19 +8,28 @@ import {
   TextField,
   Button,
   Link,
+  MenuItem,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import {
+  Person,
+  Lock,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
-
-
 
 const Login = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     usuario: "mockUser",
-    password: "1234"
+    password: "1234",
+    rol: "fono"
   });
-  
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,11 +37,19 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    navigate("/fono-dashboard");
+    if (form.rol === "fono") {
+      navigate("/fono-dashboard");
+    } else {
+      navigate("/paciente-dashboard");
+    }
   };
 
   const handleBack = () => {
     navigate("/");
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -49,6 +66,20 @@ const Login = () => {
 
           <form onSubmit={handleLogin}>
             <TextField
+              select
+              fullWidth
+              label="Ingresar como"
+              name="rol"
+              value={form.rol}
+              onChange={handleChange}
+              margin="normal"
+              required
+            >
+              <MenuItem value="fono">Fonoaudiólogo/a</MenuItem>
+              <MenuItem value="paciente">Paciente</MenuItem>
+            </TextField>
+
+            <TextField
               fullWidth
               label="Usuario"
               name="usuario"
@@ -56,16 +87,38 @@ const Login = () => {
               onChange={handleChange}
               margin="normal"
               required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Person />
+                  </InputAdornment>
+                ),
+              }}
             />
+
             <TextField
               fullWidth
               label="Contraseña"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={form.password}
               onChange={handleChange}
               margin="normal"
               required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             <Box sx={{ mt: 2, textAlign: "right" }}>

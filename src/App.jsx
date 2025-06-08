@@ -11,6 +11,16 @@ import AssignActivities from "./views/TherapistViews/AssignActivities";
 import ResolvedActivities from "./views/TherapistViews/ResolvedActivities";
 import EditPatient from "./views/TherapistViews/EditPatient";
 import ActivityDetails from "./views/TherapistViews/ActivityDetails";
+import PatientDashboard from "./views/PatientViews/PatientDashboard";
+import AssignedActivities from "./views/PatientViews/AssignedActivities";
+import AudioChoiceActivity from "./views/PatientViews/activities/AudioChoiceActivity";
+import ImageAssociationActivity from "./views/PatientViews/activities/ImageAssociationActivity";
+import VoiceImitationActivity from "./views/PatientViews/activities/VoiceImitationActivity";
+import AudioTextChoiceActivity from "./views/PatientViews/activities/AudioTextChoiceActivity";
+import ProblemSolvingActivity from "./views/PatientViews/activities/ProblemSolvingActivity";
+import ActivityHistory from "./views/PatientViews/ActivityHistory";
+import AboutUs from "./views/AboutUs";
+
 
 function App() {
   return (
@@ -26,6 +36,15 @@ function App() {
         <Route path="/actividades-resueltas/:id" element={<ResolvedActivities />} />
         <Route path="/editar-paciente/:id" element={<EditPatient />} />
         <Route path="/actividad/:id" element={<ActivityDetails />} />
+        <Route path="/paciente-dashboard" element={<PatientDashboard />} />
+        <Route path="/actividades-asignadas" element={<AssignedActivities />} />
+        <Route path="/actividad/audio" element={<AudioChoiceActivity />} />
+        <Route path="/actividad/imagen" element={<ImageAssociationActivity />} />
+        <Route path="/actividad/imitacion" element={<VoiceImitationActivity />} />
+        <Route path="/actividad/historia" element={<AudioTextChoiceActivity />} />
+        <Route path="/actividad/problema" element={<ProblemSolvingActivity />} />
+        <Route path="/historial-actividades" element={<ActivityHistory />} />
+        <Route path="/sobre-nosotros" element={<AboutUs />} />
       </Routes>
     </Router>
   );

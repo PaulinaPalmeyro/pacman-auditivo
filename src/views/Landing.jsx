@@ -6,6 +6,7 @@ import FeaturesSection from "../components/FeaturesSection";
 import HowItWorksSection from "../components/HowItWorksSection";
 import BenefitsForTherapists from "../components/BenefitsForTherapists";
 import Footer from "../components/Footer";
+
 const Landing = () => {
   return (
     <>
