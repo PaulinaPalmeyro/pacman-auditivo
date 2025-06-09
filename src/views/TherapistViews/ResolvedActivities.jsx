@@ -1,5 +1,5 @@
 // src/views/TherapistViews/ResolvedActivities.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -13,84 +13,111 @@ import {
   Divider,
 } from "@mui/material";
 import { Visibility, ArrowBack } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
-
-const mockPaciente = {
-  nombre: "Lucía Fernández",
-};
-
-const mockData = [
-  {
-    nivel: 1,
-    actividades: [
-      { nombre: "Discriminación de sonidos simples", progreso: 100 },
-      { nombre: "Repetición de secuencias cortas", progreso: 80 },
-    ]
-  },
-  {
-    nivel: 2,
-    actividades: [
-      { nombre: "Asociación de palabras con sonidos", progreso: 60 },
-      { nombre: "Secuencias de instrucciones", progreso: 90 },
-    ]
-  }
-];
+import FondoFono from '../../assets/FondoFono.png';
+import authService from "../../services/authService";
 
 const ResolvedActivities = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [historial, setHistorial] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const calcularPromedio = (actividades) => {
-    const total = actividades.reduce((acc, act) => acc + act.progreso, 0);
-    return Math.round(total / actividades.length);
-  };
+  useEffect(() => {
+    const fetchHistorial = async () => {
+      try {
+        setLoading(true);
+        const data = await authService.getHistorialNiveles(id);
+        setHistorial(data.historial);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Error al cargar el historial');
+        setLoading(false);
+      }
+    };
+    fetchHistorial();
+  }, [id]);
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: '100vh',
+      backgroundImage: `url(${FondoFono})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
       <TherapistNavbar username="Dra. Julieta Larrarte" />
-
-      <Container maxWidth="md" sx={{ py: 6 }}>
+      <Container maxWidth="md" sx={{ py: 6, flex: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-          <IconButton onClick={() => navigate("/paciente/1")}> 
+          <IconButton onClick={() => navigate(`/fono-dashboard/paciente/${id}`)}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h5" fontWeight={700} textAlign="center" sx={{ flexGrow: 1 }}>
-            Actividades Resueltas
+            Historial de Ejercicios
           </Typography>
         </Box>
-
-        <Typography variant="subtitle1" textAlign="center" mb={4}>
-          Paciente: {mockPaciente.nombre}
+        {loading ? (
+          <Typography>Cargando...</Typography>
+        ) : error ? (
+          <Typography color="error">{error}</Typography>
+        ) : historial.length === 0 ? (
+          <Typography>No hay historial de ejercicios para este paciente.</Typography>
+        ) : (
+          historial.map((nivel, idx) => (
+            <Paper key={nivel.nivel._id || idx} elevation={3} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
+              <Typography variant="h6" fontWeight={600} color="#7B1FA2" gutterBottom>
+                Nivel {nivel.nivel.number}
         </Typography>
-
-        {mockData.map((nivel) => (
-          <Paper key={nivel.nivel} elevation={3} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
-            <Typography variant="h6" fontWeight={600} color="#7B1FA2" gutterBottom>
-              Nivel {nivel.nivel}
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {nivel.nivel.description}
             </Typography>
-            <Typography variant="body1" gutterBottom>
-              Progreso total del nivel: {calcularPromedio(nivel.actividades)}%
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Fecha de asignación: {new Date(nivel.fechaAsignacion).toLocaleDateString('es-AR', { timeZone: 'UTC' })}
             </Typography>
+              {nivel.actividades.map((actividad) => (
+                <Box key={actividad._id} sx={{ mt: 2, mb: 1 }}>
+                  <Typography variant="subtitle1" fontWeight={600}>{actividad.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">{actividad.description}</Typography>
             <List>
-              {nivel.actividades.map((actividad, index) => (
-                <React.Fragment key={index}>
-                  <ListItem>
-                    <ListItemText primary={actividad.nombre} />
-                    <ListItemSecondaryAction>
-                      <IconButton edge="end" onClick={() => navigate("/actividad/1")}>
+                    {actividad.ejercicios.map((ejercicio) => {
+                      const ejercicioAsignado = nivel.ejercicios.find(ej => ej.ejercicioId === ejercicio._id || (ej.ejercicioId && ej.ejercicioId.toString() === ejercicio._id.toString()));
+                      return (
+                        <ListItem key={ejercicio._id} sx={{ pl: 2 }}
+                          secondaryAction={
+                            ejercicioAsignado && (
+                              <IconButton
+                                edge="end"
+                                color="primary"
+                                onClick={() => navigate(`/actividad/${nivel._id}/ejercicio-asignado/${ejercicioAsignado._id}`)}
+                              >
                         <Visibility />
                       </IconButton>
-                    </ListItemSecondaryAction>
+                            )
+                          }
+                        >
+                          <ListItemText
+                            primary={ejercicio.name}
+                            secondary={
+                              ejercicioAsignado ?
+                                `Completado: ${ejercicioAsignado.completo ? 'Sí' : 'No'} | Intentos: ${ejercicioAsignado.intentos.length}`
+                                : 'No asignado'
+                            }
+                          />
                   </ListItem>
-                  {index < nivel.actividades.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
+                      );
+                    })}
             </List>
+                </Box>
+              ))}
           </Paper>
-        ))}
+          ))
+        )}
       </Container>
-
       <TherapistFooter />
     </Box>
   );

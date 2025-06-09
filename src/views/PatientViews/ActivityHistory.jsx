@@ -15,6 +15,7 @@ import { ArrowBack, Replay } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import PatientNavbar from "../../components/patients/PatientNavbar";
 import PatientFooter from "../../components/patients/PatientFooter";
+import FondoFono from '../../assets/FondoFono.png';
 
 // Mock de actividades resueltas
 const actividadesResueltas = [
@@ -47,10 +48,18 @@ const ActivityHistory = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: '100vh',
+      backgroundImage: `url(${FondoFono})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
       <PatientNavbar username="Bruno" />
 
-      <Container maxWidth="md" sx={{ py: 5 }}>
+      <Container maxWidth="md" sx={{ py: 6, flex: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
           <IconButton onClick={() => navigate("/paciente-dashboard")}>
             <ArrowBack />

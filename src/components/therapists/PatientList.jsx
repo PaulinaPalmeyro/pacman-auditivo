@@ -60,7 +60,7 @@ const PatientList = () => {
   }
 
   return (
-    <Box sx={{ px: 4, py: 6, backgroundColor: "#f9fbfd", minHeight: "100vh" }}>
+    <Box sx={{ px: 4, py: 6, flex: 1 }}>
       <Box
         sx={{
           display: "flex",
@@ -111,7 +111,7 @@ const PatientList = () => {
                     DNI: {paciente.dni}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Fecha de Nacimiento: {new Date(paciente.fechaNacimiento).toLocaleDateString()}
+                    Fecha de Nacimiento: {paciente.fechaNacimiento ? new Date(paciente.fechaNacimiento).toLocaleDateString('es-AR', { timeZone: 'UTC' }) : 'Sin registrar'}
                   </Typography>
                   {paciente.observaciones && (
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -122,14 +122,17 @@ const PatientList = () => {
                 <CardActions>
                   <Button
                     size="medium"
-                    variant="outlined"
+                    variant="contained"
                     onClick={() => handleVerPerfil(paciente._id)}
                     sx={{
-                      borderColor: "#1976d2",
-                      color: "#1976d2",
+                      backgroundColor: "#1976d2",
+                      color: "white",
                       textTransform: "none",
                       fontWeight: 500,
                       borderRadius: "999px",
+                      '&:hover': {
+                        backgroundColor: '#1565c0',
+                      },
                     }}
                   >
                     Ver Perfil

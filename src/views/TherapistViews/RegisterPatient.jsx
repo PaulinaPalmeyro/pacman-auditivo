@@ -16,6 +16,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
 import authService from "../../services/authService";
+import FondoFono from '../../assets/FondoFono.png';
 
 const RegisterPatient = () => {
   const navigate = useNavigate();
@@ -79,7 +80,13 @@ const RegisterPatient = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: '100vh',
+      backgroundImage: `url(${FondoFono})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
       <TherapistNavbar username="Dra. Julieta Larrarte" />
       <Container maxWidth="md" sx={{ py: 6 }}>
         <Paper elevation={3} sx={{ p: 5, borderRadius: 4 }}>

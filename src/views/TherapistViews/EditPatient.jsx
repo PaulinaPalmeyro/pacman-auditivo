@@ -14,6 +14,7 @@ import {
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
 import authService from "../../services/authService";
+import FondoFono from '../../assets/FondoFono.png';
 
 const EditPatient = () => {
   const navigate = useNavigate();
@@ -78,7 +79,13 @@ const EditPatient = () => {
   }
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: '100vh',
+      backgroundImage: `url(${FondoFono})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
       <TherapistNavbar username="Dra. Julieta Larrarte" />
 
       <Container maxWidth="sm" sx={{ py: 6 }}>

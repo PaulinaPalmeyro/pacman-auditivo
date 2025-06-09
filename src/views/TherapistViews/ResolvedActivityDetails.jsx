@@ -1,4 +1,3 @@
-// src/views/TherapistViews/ActivityDetails.jsx
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -14,14 +13,14 @@ import {
   CircularProgress,
   Alert
 } from "@mui/material";
-import { ArrowBack, Download, PlayArrow } from "@mui/icons-material";
+import { ArrowBack, PlayArrow } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
 import authService from "../../services/authService";
 import FondoFono from '../../assets/FondoFono.png';
 
-const ActivityDetails = () => {
+const ResolvedActivityDetails = () => {
   const navigate = useNavigate();
   const { asignacionId, ejercicioAsignadoId } = useParams();
   const [loading, setLoading] = useState(true);
@@ -171,4 +170,4 @@ const ActivityDetails = () => {
   );
 };
 
-export default ActivityDetails;
+export default ResolvedActivityDetails; 

@@ -1,5 +1,5 @@
 // src/App.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from "./views/Landing";
 import Therapists from "./views/Therapists";
@@ -20,11 +20,49 @@ import AudioTextChoiceActivity from "./views/PatientViews/activities/AudioTextCh
 import ProblemSolvingActivity from "./views/PatientViews/activities/ProblemSolvingActivity";
 import ActivityHistory from "./views/PatientViews/ActivityHistory";
 import AboutUs from "./views/AboutUs";
+import ActiveAssignment from "./views/TherapistViews/ActiveAssignment";
+import AudioDetectionActivity from "./views/PatientViews/activities/AudioDetectionActivity";
+import AudioDiscriminationActivity from "./views/PatientViews/activities/AudioDiscriminationActivity";
+import IntegracionAuditivaActivity from "./views/PatientViews/activities/IntegracionAuditivaActivity";
+import ResolvedActivityDetails from "./views/TherapistViews/ResolvedActivityDetails";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
+function SessionExpiredDialog() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener('sessionExpired', handler);
+    return () => window.removeEventListener('sessionExpired', handler);
+  }, []);
+
+  const handleClose = () => {
+    setOpen(false);
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{ color: '#7B1FA2', textAlign: 'center' }}>Sesión expirada</DialogTitle>
+      <DialogContent sx={{ textAlign: 'center', fontSize: '1.1rem' }}>
+        Tu sesión ha expirado por seguridad.<br />Por favor, vuelve a iniciar sesión para continuar usando la plataforma.
+      </DialogContent>
+      <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+        <Button onClick={handleClose} variant="contained" sx={{ borderRadius: '999px', px: 4, backgroundColor: '#7B1FA2', '&:hover': { backgroundColor: '#6a1b9a' } }}>
+          Ir al Login
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 function App() {
   return (
     <Router>
+      <SessionExpiredDialog />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/fonoaudiologos" element={<Therapists />} />
@@ -35,16 +73,21 @@ function App() {
         <Route path="/asignar-actividades/:id" element={<AssignActivities />} />
         <Route path="/actividades-resueltas/:id" element={<ResolvedActivities />} />
         <Route path="/editar-paciente/:id" element={<EditPatient />} />
-        <Route path="/actividad/:id" element={<ActivityDetails />} />
+        <Route path="/actividad/:asignacionId/ejercicio-asignado/:ejercicioAsignadoId" element={<ResolvedActivityDetails />} />
         <Route path="/paciente-dashboard" element={<PatientDashboard />} />
         <Route path="/actividades-asignadas" element={<AssignedActivities />} />
-        <Route path="/actividad/audio" element={<AudioChoiceActivity />} />
-        <Route path="/actividad/imagen" element={<ImageAssociationActivity />} />
-        <Route path="/actividad/imitacion" element={<VoiceImitationActivity />} />
-        <Route path="/actividad/historia" element={<AudioTextChoiceActivity />} />
-        <Route path="/actividad/problema" element={<ProblemSolvingActivity />} />
+        <Route path="/actividad/audio/:id" element={<AudioChoiceActivity />} />
+        <Route path="/actividad/imagen/:id" element={<ImageAssociationActivity />} />
+        <Route path="/actividad/imitacion/:id" element={<VoiceImitationActivity />} />
+        <Route path="/actividad/historia/:id" element={<AudioTextChoiceActivity />} />
+        <Route path="/actividad/problema/:id" element={<ProblemSolvingActivity />} />
         <Route path="/historial-actividades" element={<ActivityHistory />} />
         <Route path="/sobre-nosotros" element={<AboutUs />} />
+        <Route path="/asignacion-activa/:id" element={<ActiveAssignment />} />
+        <Route path="/actividad/deteccion-auditiva/:id" element={<AudioDetectionActivity />} />
+        <Route path="/actividad/discriminacion-auditiva/:id" element={<AudioDiscriminationActivity />} />
+        <Route path="/historial-niveles/:id" element={<ResolvedActivities />} />
+        <Route path="/actividad/integracion-auditiva/:id" element={<IntegracionAuditivaActivity />} />
       </Routes>
     </Router>
   );

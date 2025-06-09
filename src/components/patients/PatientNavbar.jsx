@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,10 +11,19 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Logo.png";
 import { AccountCircle } from "@mui/icons-material";
+import authService from "../../services/authService";
 
-const PatientNavbar = ({ username }) => {
+const PatientNavbar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    if (user) {
+      setUsername(user.name);
+    }
+  }, []);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -24,9 +33,17 @@ const PatientNavbar = ({ username }) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    handleClose();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      handleClose();
+      navigate("/login");
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      // Aún si hay error, redirigimos al login
+      handleClose();
+      navigate("/login");
+    }
   };
 
   const handleProfile = () => {
@@ -47,7 +64,7 @@ const PatientNavbar = ({ username }) => {
         {/* Logo clickeable que lleva a la Landing */}
         <Box
           sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/paciente-dashboard")}
         >
           <img
             src={logo}

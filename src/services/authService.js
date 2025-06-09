@@ -11,6 +11,17 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      // Emitir un evento global para sesión expirada
+      window.dispatchEvent(new Event('sessionExpired'));
+    }
+    return Promise.reject(error);
+  }
+);
+
 const authService = {
   login: async (email, password) => {
     try {
@@ -66,8 +77,15 @@ const authService = {
     }
   },
 
-  logout: () => {
-    localStorage.removeItem('user');
+  logout: async () => {
+    try {
+      await axios.post(`${API_URL}/logout`);
+      localStorage.removeItem('user');
+    } catch (error) {
+      // Aún si hay error, removemos el usuario del localStorage
+      localStorage.removeItem('user');
+      throw error.response?.data || { message: 'Error al cerrar sesión' };
+    }
   },
 
   getCurrentUser: () => {
@@ -92,12 +110,150 @@ const authService = {
     }
   },
 
+  asignarNivel: async (pacienteId, nivelId) => {
+    try {
+      const response = await axios.post(`${API_URL}/asignar-nivel`, {
+        pacienteId,
+        nivelId
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al asignar nivel' };
+    }
+  },
+
+  getNiveles: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/niveles`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener niveles' };
+    }
+  },
+
+  getAsignacionActiva: async (pacienteId) => {
+    try {
+      const response = await axios.get(`${API_URL}/asignacion-activa/${pacienteId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener la asignación activa' };
+    }
+  },
+
+  getMisActividades: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/mis-actividades`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener mis actividades' };
+    }
+  },
+
   deletePatient: async (patientId) => {
     try {
       const response = await axios.delete(`${API_URL}/paciente/${patientId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Error al eliminar paciente' };
+    }
+  },
+
+  eliminarAsignacion: async (asignacionId) => {
+    try {
+      const response = await axios.delete(`${API_URL}/asignacion/${asignacionId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al eliminar asignación' };
+    }
+  },
+
+  validarProgreso: async (asignacionId) => {
+    try {
+      const response = await axios.put(`${API_URL}/asignacion/${asignacionId}/validar`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al validar progreso' };
+    }
+  },
+
+  editarAsignacion: async (asignacionId, ejercicios) => {
+    try {
+      const response = await axios.put(`${API_URL}/asignacion/${asignacionId}`, { ejercicios });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al editar asignación' };
+    }
+  },
+
+  getAsignaciones: async (pacienteId) => {
+    try {
+      const response = await axios.get(`${API_URL}/asignaciones/${pacienteId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener asignaciones' };
+    }
+  },
+
+  async getEjercicioById(ejercicioId) {
+    try {
+      const response = await axios.get(`${API_URL}/ejercicio/${ejercicioId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener el ejercicio' };
+    }
+  },
+
+  async registrarIntento(ejercicioId, intento) {
+    try {
+      const response = await axios.post(`${API_URL}/ejercicio/${ejercicioId}/intento`, intento);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al registrar el intento' };
+    }
+  },
+
+  async getEjercicioAsignadoDetalle(asignacionId, ejercicioAsignadoId) {
+    try {
+      const response = await axios.get(`${API_URL}/asignacion/${asignacionId}/ejercicio-asignado/${ejercicioAsignadoId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener el detalle del ejercicio asignado' };
+    }
+  },
+
+  async reasignarNivel(asignacionId) {
+    try {
+      const response = await axios.put(`${API_URL}/asignacion/${asignacionId}/reasignar`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al reasignar el nivel' };
+    }
+  },
+
+  async getHistorialNiveles(pacienteId) {
+    try {
+      const response = await axios.get(`${API_URL}/historial-niveles/${pacienteId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener el historial de niveles' };
+    }
+  },
+
+  async getNotificacionesFono() {
+    try {
+      const response = await axios.get(`${API_URL}/notificaciones-fono`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener notificaciones' };
+    }
+  },
+
+  async marcarNotificacionLeida(asignacionId) {
+    try {
+      const response = await axios.put(`${API_URL}/notificaciones-fono/${asignacionId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al marcar notificación como leída' };
     }
   }
 };

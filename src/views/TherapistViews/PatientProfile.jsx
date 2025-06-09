@@ -21,6 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
 import authService from "../../services/authService";
+import FondoFono from '../../assets/FondoFono.png';
 
 const PatientProfile = () => {
   const navigate = useNavigate();
@@ -85,7 +86,13 @@ const PatientProfile = () => {
   }
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: '100vh',
+      backgroundImage: `url(${FondoFono})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
       <TherapistNavbar username="Dra. Julieta Larrarte" />
 
       <Container maxWidth="md" sx={{ py: 6 }}>
@@ -123,7 +130,7 @@ const PatientProfile = () => {
                 Fecha de Nacimiento:&nbsp;
               </Typography>
               <Typography display="inline">
-                {new Date(paciente.fechaNacimiento).toLocaleDateString()}
+                {new Date(paciente.fechaNacimiento).toLocaleDateString('es-AR', { timeZone: 'UTC' })}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -162,7 +169,7 @@ const PatientProfile = () => {
                 <Button
                   fullWidth
                   variant="contained"
-                  onClick={() => navigate(`/actividades-resueltas/${id}`)}
+                  onClick={() => navigate(`/asignacion-activa/${id}`)}
                   sx={{
                     py: 2,
                     backgroundColor: "#1976d2",
@@ -174,7 +181,26 @@ const PatientProfile = () => {
                     "&:hover": { backgroundColor: "#1565c0" },
                   }}
                 >
-                  Actividades Resueltas
+                  Ver Asignación Activa
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => navigate(`/historial-niveles/${id}`)}
+                  sx={{
+                    py: 2,
+                    backgroundColor: "#FF9800",
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    borderRadius: "999px",
+                    textTransform: "none",
+                    "&:hover": { backgroundColor: "#F57C00" },
+                  }}
+                >
+                  Historial de Ejercicios
                 </Button>
               </Grid>
             </Grid>
