@@ -93,35 +93,62 @@ const PatientDashboard = () => {
       <Container maxWidth="md" sx={{ py: 6, flex: 1, position: 'relative', zIndex: 2 }}>
         <Paper elevation={3} sx={{ p: 5, borderRadius: 4 }}>
           <Typography variant="h5" fontWeight={700} textAlign="center" gutterBottom>
-            ¡Bienvenido, {user?.name}!
+            <span style={{ fontSize: '2.8rem', fontWeight: 900, color: '#7B1FA2' }}>
+              ¡Bienvenido, {user?.name}!
+            </span>
           </Typography>
           {asignacion ? (
             <Box sx={{ mt: 4, textAlign: "center" }}>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
+              <Typography variant="h4" color="text.secondary" gutterBottom sx={{ fontWeight: 700 }}>
                 Tienes actividades asignadas
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
                 Nivel {asignacion.nivelId.number}
               </Typography>
-              <Button
-                variant="contained"
-                onClick={() => navigate("/actividades-asignadas")}
-                sx={{
-                  py: 2,
-                  px: 6,
-                  backgroundColor: "#4caf50",
-                  color: "white",
-                  fontWeight: 600,
-                  fontSize: "1.1rem",
-                  borderRadius: "999px",
-                  textTransform: "none",
-                  "&:hover": {
-                    backgroundColor: "#388e3c",
-                  },
-                }}
-              >
-                ¡Resolver Actividades! ({asignacion.ejercicios.filter(ej => ej.completo).length}/{asignacion.ejercicios.length})
-              </Button>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mt: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate("/actividades-asignadas")}
+                  sx={{
+                    py: 2,
+                    px: 6,
+                    backgroundColor: "#4caf50",
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                    borderRadius: "999px",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "#388e3c",
+                    },
+                  }}
+                >
+                  ¡Resolver Actividades! ({asignacion.ejercicios.filter(ej => ej.completo).length}/{asignacion.ejercicios.length})
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate("/historial-actividades")}
+                  sx={{
+                    py: 2,
+                    px: 6,
+                    borderRadius: '999px',
+                    borderWidth: 2,
+                    borderColor: '#1976d2',
+                    color: '#1976d2',
+                    fontWeight: 700,
+                    fontSize: '1.1rem',
+                    backgroundColor: 'white',
+                    textTransform: 'none',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                      borderColor: '#1565c0',
+                      color: '#1565c0',
+                    },
+                  }}
+                >
+                  Historial de Actividades
+                </Button>
+              </Box>
             </Box>
           ) : (
             <Box sx={{ mt: 4, textAlign: "center" }}>

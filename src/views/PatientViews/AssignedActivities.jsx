@@ -68,6 +68,13 @@ const AssignedActivities = () => {
       case 'integracion auditiva':
         navigate(`/actividad/integracion-auditiva/${ejercicio._id}`);
         break;
+      case 'identificar cuál no pertenece':
+      case 'identificar cual no pertenece':
+        navigate(`/actividad/identificar-no-pertenece/${ejercicio._id}`);
+        break;
+      case 'completando la serie':
+        navigate(`/actividad/completando-serie/${ejercicio._id}`);
+        break;
       case 'imagen':
         navigate(`/actividad/imagen/${ejercicio._id}`);
         break;

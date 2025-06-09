@@ -24,6 +24,8 @@ import ActiveAssignment from "./views/TherapistViews/ActiveAssignment";
 import AudioDetectionActivity from "./views/PatientViews/activities/AudioDetectionActivity";
 import AudioDiscriminationActivity from "./views/PatientViews/activities/AudioDiscriminationActivity";
 import IntegracionAuditivaActivity from "./views/PatientViews/activities/IntegracionAuditivaActivity";
+import IdentificarNoPerteneceActivity from "./views/PatientViews/activities/IdentificarNoPerteneceActivity";
+import CompletandoSerieActivity from "./views/PatientViews/activities/CompletandoSerieActivity";
 import ResolvedActivityDetails from "./views/TherapistViews/ResolvedActivityDetails";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -88,6 +90,17 @@ function App() {
         <Route path="/actividad/discriminacion-auditiva/:id" element={<AudioDiscriminationActivity />} />
         <Route path="/historial-niveles/:id" element={<ResolvedActivities />} />
         <Route path="/actividad/integracion-auditiva/:id" element={<IntegracionAuditivaActivity />} />
+        <Route path="/actividad/identificar-no-pertenece/:id" element={<IdentificarNoPerteneceActivity />} />
+        <Route path="/actividad/completando-serie/:id" element={<CompletandoSerieActivity />} />
+        <Route path="/actividad-historial/deteccion-auditiva/:asignacionId/:ejercicioAsignadoId" element={<AudioDetectionActivity historialMode={true} />} />
+        <Route path="/actividad-historial/discriminacion-auditiva/:asignacionId/:ejercicioAsignadoId" element={<AudioDiscriminationActivity historialMode={true} />} />
+        <Route path="/actividad-historial/integracion-auditiva/:asignacionId/:ejercicioAsignadoId" element={<IntegracionAuditivaActivity historialMode={true} />} />
+        <Route path="/actividad-historial/identificar-no-pertenece/:asignacionId/:ejercicioAsignadoId" element={<IdentificarNoPerteneceActivity historialMode={true} />} />
+        <Route path="/actividad-historial/completando-serie/:asignacionId/:ejercicioAsignadoId" element={<CompletandoSerieActivity historialMode={true} />} />
+        <Route path="/actividad-historial/imagen/:asignacionId/:ejercicioAsignadoId" element={<ImageAssociationActivity historialMode={true} />} />
+        <Route path="/actividad-historial/imitacion/:asignacionId/:ejercicioAsignadoId" element={<VoiceImitationActivity historialMode={true} />} />
+        <Route path="/actividad-historial/historia/:asignacionId/:ejercicioAsignadoId" element={<AudioTextChoiceActivity historialMode={true} />} />
+        <Route path="/actividad-historial/problema/:asignacionId/:ejercicioAsignadoId" element={<ProblemSolvingActivity historialMode={true} />} />
       </Routes>
     </Router>
   );

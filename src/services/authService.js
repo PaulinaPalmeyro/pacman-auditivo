@@ -255,6 +255,15 @@ const authService = {
     } catch (error) {
       throw error.response?.data || { message: 'Error al marcar notificación como leída' };
     }
+  },
+
+  getHistorialActividadesPaciente: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/historial-actividades-paciente`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al obtener el historial de actividades del paciente' };
+    }
   }
 };
 

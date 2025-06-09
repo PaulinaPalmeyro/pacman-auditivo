@@ -16,14 +16,15 @@ import {
   Fade,
 } from "@mui/material";
 import { ArrowBack, VolumeUp, Check, Close, EmojiEmotions, SentimentDissatisfied } from "@mui/icons-material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import PatientNavbar from "../../../components/patients/PatientNavbar";
 import PatientFooter from "../../../components/patients/PatientFooter";
 import authService from "../../../services/authService";
 
-const AudioDiscriminationActivity = () => {
+const AudioDiscriminationActivity = ({ historialMode }) => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const location = useLocation();
+  const params = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ejercicio, setEjercicio] = useState(null);
@@ -36,32 +37,28 @@ const AudioDiscriminationActivity = () => {
     const fetchEjercicio = async () => {
       try {
         setLoading(true);
-        const data = await authService.getEjercicioById(id);
-        setEjercicio(data);
-        
-        console.log("Fetched exercise data:", data);
-        console.log("audioIds from exercise:", data.audioIds);
-
-        // Cargar el audio si existe un audioId
-        if (data.audioIds && data.audioIds.length > 0) {
-          const audioIdFromExercise = data.audioIds[0];
-          const audioUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/audio/${audioIdFromExercise}`;
-          console.log("Constructed Audio URL:", audioUrl);
-          setAudio(new Audio(audioUrl));
+        let data;
+        if (params.asignacionId && params.ejercicioAsignadoId) {
+          // Modo historial
+          const res = await authService.getEjercicioAsignadoDetalle(params.asignacionId, params.ejercicioAsignadoId);
+          data = { ...res.ejercicio, ...res.actividad, completo: res.completo, intentos: res.intentos };
         } else {
-          console.warn("No valid audioIds found for this exercise:", data);
+          // Modo normal
+          data = await authService.getEjercicioById(params.id);
         }
-
+        setEjercicio(data);
+        if (data.audioIds && data.audioIds.length > 0) {
+          const audioUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/audio/${data.audioIds[0]}`;
+          setAudio(new Audio(audioUrl));
+        }
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching exercise or setting audio:", err);
         setError(err.message || 'Error al cargar el ejercicio');
         setLoading(false);
       }
     };
-
     fetchEjercicio();
-  }, [id]);
+  }, [params]);
 
   const reproducirAudio = () => {
     console.log("Current audio object state:", audio);
@@ -104,7 +101,7 @@ const AudioDiscriminationActivity = () => {
       const esCorrecto = seleccion === backendCorrectAnswerMapped;
       console.log('¿Es correcto?:', esCorrecto);
 
-      const response = await authService.registrarIntento(id, {
+      const response = await authService.registrarIntento(params.id, {
         respuesta: seleccion,
         correcto: esCorrecto
       });
@@ -116,7 +113,11 @@ const AudioDiscriminationActivity = () => {
   };
 
   const handleContinuar = () => {
-    navigate('/actividades-asignadas');
+    if (location.state?.from === 'historial') {
+      navigate('/historial-actividades');
+    } else {
+      navigate('/actividades-asignadas');
+    }
   };
 
   const handleReintentar = () => {
@@ -146,7 +147,7 @@ const AudioDiscriminationActivity = () => {
 
       <Container maxWidth="sm" sx={{ py: 6 }}>
         <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
-          <IconButton onClick={() => navigate("/actividades-asignadas")}>
+          <IconButton onClick={handleContinuar}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h5" fontWeight={700} sx={{ ml: 2 }}>

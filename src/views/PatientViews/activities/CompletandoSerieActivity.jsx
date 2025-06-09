@@ -20,7 +20,7 @@ import PatientNavbar from "../../../components/patients/PatientNavbar";
 import PatientFooter from "../../../components/patients/PatientFooter";
 import authService from "../../../services/authService";
 
-const IntegracionAuditivaActivity = ({ historialMode }) => {
+const CompletandoSerieActivity = ({ historialMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -124,12 +124,12 @@ const IntegracionAuditivaActivity = ({ historialMode }) => {
         <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
           <IconButton onClick={handleContinuar}> <ArrowBack /> </IconButton>
           <Typography variant="h5" fontWeight={700} sx={{ ml: 2 }}>
-            {ejercicio?.gameName || 'Integración Auditiva'}
+            Completando la serie
           </Typography>
         </Box>
         <Paper elevation={3} sx={{ p: 2, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom textAlign="center">
-            {ejercicio?.question || 'Escucha el audio y elige la imagen correcta'}
+            {ejercicio?.question || 'Escucha el audio y elige la opción que completa la serie'}
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
             <Button
@@ -256,4 +256,4 @@ const IntegracionAuditivaActivity = ({ historialMode }) => {
   );
 };
 
-export default IntegracionAuditivaActivity; 
+export default CompletandoSerieActivity; 
