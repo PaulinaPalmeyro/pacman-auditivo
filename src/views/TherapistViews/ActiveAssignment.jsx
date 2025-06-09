@@ -35,6 +35,7 @@ import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
 import authService from "../../services/authService";
 import FondoFono from '../../assets/FondoFono.png';
+import { generarPDFNivel } from '../../utils/pdfUtils';
 
 const ActiveAssignment = () => {
   const navigate = useNavigate();
@@ -128,6 +129,26 @@ const ActiveAssignment = () => {
     } catch (err) {
       setError(err.message || 'Error al reasignar el nivel');
     }
+  };
+
+  const handleDescargarResultados = () => {
+    if (!asignacion || !paciente) return;
+    // Adaptar la estructura para la utilidad PDF
+    const nivelData = {
+      nivel: asignacion.nivelId,
+      fechaAsignacion: asignacion.fechaAsignacion,
+      actividades: asignacion.nivelId.actividades,
+      ejercicios: asignacion.ejercicios
+    };
+    // Vincular los intentos y estado a cada ejercicio
+    nivelData.actividades.forEach(actividad => {
+      actividad.ejercicios.forEach(ejercicio => {
+        const ejAsignado = asignacion.ejercicios.find(ej => ej.ejercicioId.toString() === ejercicio._id.toString());
+        ejercicio.intentos = ejAsignado ? ejAsignado.intentos : [];
+        ejercicio.completo = ejAsignado ? ejAsignado.completo : false;
+      });
+    });
+    generarPDFNivel(nivelData, paciente.name);
   };
 
   if (loading) {
@@ -308,7 +329,7 @@ const ActiveAssignment = () => {
               variant="outlined"
               color="primary"
               sx={{ borderRadius: '999px', px: 4, fontWeight: 600 }}
-              onClick={() => {/* Lógica de descarga aquí */}}
+              onClick={handleDescargarResultados}
             >
               Descargar Resultados
             </Button>
