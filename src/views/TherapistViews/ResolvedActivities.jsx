@@ -11,6 +11,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Divider,
+  Button,
 } from "@mui/material";
 import { Visibility, ArrowBack } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
@@ -114,7 +115,17 @@ const ResolvedActivities = () => {
             </List>
                 </Box>
               ))}
-          </Paper>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{ borderRadius: '999px', px: 4, fontWeight: 600 }}
+                  onClick={() => {/* Lógica de descarga aquí */}}
+                >
+                  Descargar Resultados
+                </Button>
+              </Box>
+            </Paper>
           ))
         )}
       </Container>

@@ -302,6 +302,18 @@ const ActiveAssignment = () => {
             </Stack>
           </Paper>
         ) : null}
+        {asignacion && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ borderRadius: '999px', px: 4, fontWeight: 600 }}
+              onClick={() => {/* Lógica de descarga aquí */}}
+            >
+              Descargar Resultados
+            </Button>
+          </Box>
+        )}
       </Container>
 
       <Dialog
