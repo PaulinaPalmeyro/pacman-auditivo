@@ -204,24 +204,6 @@ const PatientProfile = () => {
                 </Button>
               </Grid>
             </Grid>
-
-            <Button
-              variant="contained"
-              sx={{
-                py: 2,
-                mt: 2,
-                width: "100%",
-                backgroundColor: "white",
-                color: "#7B1FA2",
-                fontWeight: 600,
-                fontSize: "1rem",
-                borderRadius: "999px",
-                textTransform: "none",
-                "&:hover": { backgroundColor: "#f9a825" },
-              }}
-            >
-              Ver Observaciones al Usuario
-            </Button>
           </Box>
         </Paper>
       </Container>

@@ -4,6 +4,9 @@ import { Box, Typography, Grid, Avatar } from "@mui/material";
 import avatar1 from "../assets/avatar1.png";
 import avatar2 from "../assets/avatar2.png";
 import avatar3 from "../assets/avatar3.png";
+import avatar4 from "../assets/avatar4.png";
+import avatar5 from "../assets/avatar5.png";
+import avatar6 from "../assets/avatar6.png";
 
 // Personas de desarrollo
 const developmentTeam = [
@@ -29,17 +32,17 @@ const fonoTeam = [
   {
     name: "Oriana Ávalos",
     description: "Estudiante de Fonoaudiología, aporta el enfoque clínico y terapéutico al proyecto.",
-    image: avatar1,
+    image: avatar4,
   },
   {
     name: "Valentina López",
     description: "Estudiante de Fonoaudiología, especializada en desarrollo de actividades auditivas.",
-    image: avatar2,
+    image: avatar5,
   },
   {
     name: "Julieta Ríos",
     description: "Estudiante de Fonoaudiología, se enfoca en la validación clínica del contenido.",
-    image: avatar3,
+    image: avatar6,
   },
 ];
 

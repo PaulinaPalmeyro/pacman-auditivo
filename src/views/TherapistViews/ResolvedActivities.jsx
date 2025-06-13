@@ -11,6 +11,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Divider,
+  Button,
 } from "@mui/material";
 import { Visibility, ArrowBack } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,6 +19,7 @@ import TherapistNavbar from "../../components/therapists/TherapistNavbar";
 import TherapistFooter from "../../components/therapists/TherapistFooter";
 import FondoFono from '../../assets/FondoFono.png';
 import authService from "../../services/authService";
+import { generarPDFNivel } from '../../utils/pdfUtils';
 
 const ResolvedActivities = () => {
   const navigate = useNavigate();
@@ -70,20 +72,47 @@ const ResolvedActivities = () => {
         ) : (
           historial.map((nivel, idx) => (
             <Paper key={nivel.nivel._id || idx} elevation={3} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
-              <Typography variant="h6" fontWeight={600} color="#7B1FA2" gutterBottom>
-                Nivel {nivel.nivel.number}
-        </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6" fontWeight={600} color="#7B1FA2" gutterBottom>
+                  Nivel {nivel.nivel.number}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{ borderRadius: '999px', fontWeight: 600 }}
+                  onClick={() => {
+                    // Vincular los intentos y estado a cada ejercicio
+                    const nivelData = {
+                      ...nivel,
+                      actividades: nivel.actividades.map(act => ({
+                        ...act,
+                        ejercicios: act.ejercicios.map(ej => {
+                          const ejAsignado = nivel.ejercicios.find(ejA => ejA.ejercicioId === ej._id || (ejA.ejercicioId && ejA.ejercicioId.toString() === ej._id.toString()));
+                          return {
+                            ...ej,
+                            intentos: ejAsignado ? ejAsignado.intentos : [],
+                            completo: ejAsignado ? ejAsignado.completo : false
+                          };
+                        })
+                      }))
+                    };
+                    generarPDFNivel(nivelData);
+                  }}
+                >
+                  Descargar PDF
+                </Button>
+              </Box>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                 {nivel.nivel.description}
-            </Typography>
+              </Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 Fecha de asignación: {new Date(nivel.fechaAsignacion).toLocaleDateString('es-AR', { timeZone: 'UTC' })}
-            </Typography>
+              </Typography>
               {nivel.actividades.map((actividad) => (
                 <Box key={actividad._id} sx={{ mt: 2, mb: 1 }}>
                   <Typography variant="subtitle1" fontWeight={600}>{actividad.name}</Typography>
                   <Typography variant="body2" color="text.secondary">{actividad.description}</Typography>
-            <List>
+                  <List>
                     {actividad.ejercicios.map((ejercicio) => {
                       const ejercicioAsignado = nivel.ejercicios.find(ej => ej.ejercicioId === ejercicio._id || (ej.ejercicioId && ej.ejercicioId.toString() === ejercicio._id.toString()));
                       return (
@@ -95,8 +124,8 @@ const ResolvedActivities = () => {
                                 color="primary"
                                 onClick={() => navigate(`/actividad/${nivel._id}/ejercicio-asignado/${ejercicioAsignado._id}`)}
                               >
-                        <Visibility />
-                      </IconButton>
+                                <Visibility />
+                              </IconButton>
                             )
                           }
                         >
@@ -108,13 +137,13 @@ const ResolvedActivities = () => {
                                 : 'No asignado'
                             }
                           />
-                  </ListItem>
+                        </ListItem>
                       );
                     })}
-            </List>
+                  </List>
                 </Box>
               ))}
-          </Paper>
+            </Paper>
           ))
         )}
       </Container>
